@@ -14,6 +14,7 @@ class Field:
 class IntField(Field):
     def __init__(self, required=True, default=None):
         super().__init__(int, required, default)
+
     def validate(self, value):
         if not isinstance(value, int):
             raise TypeError('only 0-9 numbers allowed')
@@ -33,13 +34,14 @@ class FloatField(Field):
 class StringField(Field):
     def __init__(self, length=50, required=True, default=None):
         super().__init__(str, required, default)
-        self.length=length
+        self.length = length
+
     def validate(self, value):
         if not isinstance(value, str):
             raise TypeError('only str type allowed')
         else:
             pass
-        if len(value)>self.length:
+        if len(value) > self.length:
             raise ValueError('only {} characters allowed'.format(self.length))
         else:
             pass
@@ -50,11 +52,10 @@ class TextField(StringField):
         super().__init__(500, required, default)
 
 
-
-
 class VarcharField(StringField):
     def __init__(self, required=True, default=None):
         super().__init__(50, required, default)
 
 
 class DateField(Field):
+    pass
