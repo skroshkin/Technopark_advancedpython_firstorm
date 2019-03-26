@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class Field:
     def __init__(self, f_type, required=True, default=None):
         self.f_type = f_type
@@ -60,4 +63,15 @@ class VarcharField(StringField):
 
 
 class DateField(Field):
-    pass
+    def __init__(self, required=True, default=None):
+        super().__init__(str, required, default)
+
+    def validate(self, value):
+        if not isinstance(value, str):
+            raise TypeError('only str type allowed')
+        else:
+            pass
+        if value != datetime.strptime(value, '%d.%m.%Y'):
+            raise ValueError('only DD.MM.YYYY format allowed')
+        else:
+            pass
