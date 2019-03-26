@@ -25,6 +25,8 @@ class IntField(Field):
 class FloatField(Field):
     def __init__(self, required=True, default=None):
         super().__init__(float, required, default)
+
+    def validate(self, value):
         if not isinstance(value, float):
             raise TypeError('only float characters allowed')
         else:
