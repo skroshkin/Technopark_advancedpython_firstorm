@@ -1,4 +1,12 @@
 from datetime import datetime
+import re
+
+vulnerabilities_keywords = [
+    'select', 'union', 'insert', 'update', 'drop',
+    'alter', '--', 'or', 'and'
+]
+
+Type_Error = 'only {} type allowed'
 
 
 class Field:
@@ -10,7 +18,15 @@ class Field:
     def validate(self, value):
         if value is None and not self.required:
             return None
-        # todo exceptions
+        if re.match(r'\s', value):
+            raise ValueError('space at the beginning of the field is not allowed')
+        if not isinstance(value, str):
+            raise Type_Error.format(str)
+        # я понимаю, что сочетание букв or и and могут встречаться в обычных словах
+        for key_word in vulnerabilities_keywords:
+            if value.lower().find(key_word.lower()) != -1:
+                print('Warning: this string has vulnerabilities')
+                break
         return self.f_type(value)
 
 
@@ -20,9 +36,7 @@ class IntField(Field):
 
     def validate(self, value):
         if not isinstance(value, int):
-            raise TypeError('only 0-9 numbers allowed')
-        else:
-            pass
+            raise Type_Error.format('int')
 
 
 class FloatField(Field):
@@ -31,9 +45,7 @@ class FloatField(Field):
 
     def validate(self, value):
         if not isinstance(value, float):
-            raise TypeError('only float characters allowed')
-        else:
-            pass
+            raise Type_Error.format('float')
 
 
 class StringField(Field):
@@ -43,13 +55,9 @@ class StringField(Field):
 
     def validate(self, value):
         if not isinstance(value, str):
-            raise TypeError('only str type allowed')
-        else:
-            pass
+            raise Type_Error.format('str')
         if len(value) > self.length:
             raise ValueError('only {} characters allowed'.format(self.length))
-        else:
-            pass
 
 
 class TextField(StringField):
@@ -68,10 +76,6 @@ class DateField(Field):
 
     def validate(self, value):
         if not isinstance(value, str):
-            raise TypeError('only str type allowed')
-        else:
-            pass
+            raise Type_Error.format('str')
         if value != datetime.strptime(value, '%d.%m.%Y'):
             raise ValueError('only DD.MM.YYYY format allowed')
-        else:
-            pass
